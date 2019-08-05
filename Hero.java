@@ -1,12 +1,11 @@
-/**
- * 与hero表映射的实体类
- */
+package day18;
+
 public class Hero {
     private int id;
     private String sno;
     private String sname;
     private String ssex;
-    private int sage;
+    private int age;
 
     public int getId() {
         return id;
@@ -40,14 +39,13 @@ public class Hero {
         this.ssex = ssex;
     }
 
-    public int getSage() {
-        return sage;
+    public int getAge() {
+        return age;
     }
 
-    public void setSage(int sage) {
-        this.sage = sage;
+    public void setAge(int age) {
+        this.age = age;
     }
-
 
     @Override
     public String toString() {
@@ -56,7 +54,7 @@ public class Hero {
                 ", sno='" + sno + '\'' +
                 ", sname='" + sname + '\'' +
                 ", ssex='" + ssex + '\'' +
-                ", sage='" + sage + '\'' +
+                ", age=" + age +
                 '}';
     }
 }

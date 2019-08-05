@@ -1,89 +1,55 @@
-package com.train.day14.jdbc;
+package day18;
 
-import org.junit.jupiter.api.Test;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author ：孙鹏
- * @date ：Created in 2019/8/5 0005 15:45
- * @description：
- * @version:
- */
-public class HeroOperator implements HeroOperatable {
-
-    @Test
-    public void updateTest() {
-        Hero hero = new Hero();
-        hero.setId(4);
-        hero.setSno("17");
-        hero.setSname("huahuahua");
-        hero.setSex("F");
-        hero.setSage(133);
-        updateHeroById(hero);
-    }
-
-    @Test
-    public void deleteTest() {
-        deleteHeroById(5);
-    }
-
-    @Test
-    public void selectTest() {
-        List<Hero> heroList = findAllHero();
-        heroList.forEach(System.out::println);
-    }
-
-    @Test
-    public void insertTest() {
-        Hero hero = new Hero();
-        hero.setSno("17");
-        hero.setSname("huahuahua");
-        hero.setSex("F");
-        hero.setSage(133);
-        insertHeroById(hero);
-    }
-
+public class HeroOperator implements HeroOperatable{
     @Override
     public List<Hero> findAllHero() {
-        Connection connection = JdbcUtil.getConnection();
+        Connection connection = JdbcUtil.getInstance().getConnection();
         Statement statement = null;
         ResultSet rs = null;
-        List<Hero> heroList = null;
+        List<Hero> heroList = new ArrayList<>();
         try {
             statement = connection.createStatement();
             String sql = "select * from hero";
-            heroList = new ArrayList<>();
             rs = statement.executeQuery(sql);
-            while (rs.next()) {
+
+            while (rs.next()){
+                int id = rs.getInt(1);
+                String sno = rs.getString(2);
+                String sname = rs.getString("sname");
+                String ssex = rs.getString("ssex");
+                int sage = rs.getInt(5);
                 Hero hero = new Hero();
-                hero.setId(rs.getInt("id"));
-                hero.setSno(rs.getString("sno"));
-                hero.setSname(rs.getString("sname"));
-                hero.setSex(rs.getString("ssex"));
-                hero.setSage(rs.getInt("sage"));
+                hero.setId(id);
+                hero.setSname(sname);
+                hero.setSsex(ssex);
+                hero.setSno(sno);
+                hero.setAge(sage);
                 heroList.add(hero);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            JdbcUtil.closeRes(rs);
-            JdbcUtil.closeRes(statement);
-            JdbcUtil.closeRes(connection);
+        }finally {
+            JdbcUtil.getInstance().closeResource(rs);
+            JdbcUtil.getInstance().closeResource(statement);
+            JdbcUtil.getInstance().closeResource(connection);
         }
         return heroList;
     }
 
     @Override
-    public int insertHeroById(Hero hero) {
-        Connection connection = JdbcUtil.getConnection();
+    public int updateHeroById(Hero hero) {
+        return 0;
+    }
+
+    @Override
+    public int insertHero(Hero hero) {
+        Connection connection = JdbcUtil.getInstance().getConnection();
         Statement statement = null;
-        int affectedRows = 0;
+
         try {
             statement = connection.createStatement();
             StringBuffer stringBuffer = new StringBuffer();
@@ -93,71 +59,31 @@ public class HeroOperator implements HeroOperatable {
             stringBuffer.append("','");
             stringBuffer.append(hero.getSname());
             stringBuffer.append("','");
-            stringBuffer.append(hero.getSex());
+            stringBuffer.append(hero.getSsex());
             stringBuffer.append("',");
-            stringBuffer.append(hero.getSage());
+            stringBuffer.append(hero.getAge());
             stringBuffer.append(")");
-            String sql = stringBuffer.toString();
-            System.out.println(sql);
-            affectedRows = statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            JdbcUtil.closeRes(statement);
-            JdbcUtil.closeRes(connection);
-        }
-        return affectedRows;
-    }
 
-    @Override
-    public int updateHeroById(Hero hero) {
-        Connection connection = JdbcUtil.getConnection();
-        Statement statement = null;
-        int affectedRows = 0;
-        try {
-            statement = connection.createStatement();
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append("update hero set sno='");//10 where id=6
-            stringBuffer.append(hero.getSno());
-            stringBuffer.append("',sname='");
-            stringBuffer.append(hero.getSname());
-            stringBuffer.append("',ssex='");
-            stringBuffer.append(hero.getSex());
-            stringBuffer.append("',sage=");
-            stringBuffer.append(hero.getSage());
-            stringBuffer.append(" where id=");
-            stringBuffer.append(hero.getId());
-            String sql = stringBuffer.toString();
-            System.out.println(sql);
-            affectedRows = statement.executeUpdate(sql);
+            System.out.println(stringBuffer.toString());
+
+            int affectedRows = statement.executeUpdate(stringBuffer.toString());
+
+            return affectedRows;
+
+
+
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            JdbcUtil.closeRes(statement);
-            JdbcUtil.closeRes(connection);
+        }finally {
+            JdbcUtil.getInstance().closeResource(statement);
+            JdbcUtil.getInstance().closeResource(connection);
         }
-        return affectedRows;
+        return 0;
     }
 
     @Override
     public int deleteHeroById(int id) {
-        Connection connection = JdbcUtil.getConnection();
-        Statement statement = null;
-        int affectedRows = 0;
-        try {
-            statement = connection.createStatement();
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append("delete from hero where id=");
-            stringBuffer.append(id);
-            String sql = stringBuffer.toString();
-            System.out.println(sql);
-            affectedRows = statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            JdbcUtil.closeRes(statement);
-            JdbcUtil.closeRes(connection);
-        }
-        return affectedRows;
+
+        return 0;
     }
 }

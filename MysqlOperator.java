@@ -1,9 +1,10 @@
+package day18;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MysqlOperator {
-
     public static void main(String[] args) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -12,19 +13,16 @@ public class MysqlOperator {
         }
 
         Connection connection = null;
-        ResultSet rs = null;
         Statement statement = null;
-
+        ResultSet rs = null;
 
         List<Hero> heroList = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/train", "root", "123456");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hahahaha","root","123456");
             statement = connection.createStatement();
             String sql = "select * from hero";
-
             rs = statement.executeQuery(sql);
-
 
             while (rs.next()){
                 int id = rs.getInt(1);
@@ -34,19 +32,19 @@ public class MysqlOperator {
                 int sage = rs.getInt(5);
                 Hero hero = new Hero();
                 hero.setId(id);
+                hero.setSno(sno);
                 hero.setSname(sname);
                 hero.setSsex(ssex);
-                hero.setSno(sno);
-                hero.setSage(sage);
+                hero.setAge(sage);
                 heroList.add(hero);
             }
 
-            // 操作hero表中的数据
             heroList.forEach(System.out::println);
+
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally{
+        }finally {
             closeResource(rs);
             closeResource(statement);
             closeResource(connection);
@@ -54,9 +52,9 @@ public class MysqlOperator {
 
     }
 
+    public static void closeResource(AutoCloseable autoCloseable){
 
-    public static void closeResource(AutoCloseable autoCloseable) {
-        if (null != autoCloseable) {
+        if (null != autoCloseable){
             try {
                 autoCloseable.close();
             } catch (Exception e) {
@@ -64,5 +62,4 @@ public class MysqlOperator {
             }
         }
     }
-
 }
